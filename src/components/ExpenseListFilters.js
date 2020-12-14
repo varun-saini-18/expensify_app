@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { DateRangePicker } from 'react-dates';
-import { setTextFilter, sortByDate, sortByAmount, setStartDate, setEndDate } from '../actions/filters';
+import { setTextFilter, sortByDate, sortByAmount, setDoneFilter, setUndoneFilter, setAllFilter, setStartDate, setEndDate } from '../actions/filters';
 
 export class ExpenseListFilters extends React.Component {
   state = {
@@ -16,6 +16,15 @@ export class ExpenseListFilters extends React.Component {
   }
   onTextChange = (e) => {
     this.props.setTextFilter(e.target.value);
+  };
+  onDoneChange = (e) => {
+    if (e.target.value === 'done') {
+      this.props.setDoneFilter();
+    } else if (e.target.value === 'unDone') {
+      this.props.setUndoneFilter();
+    } else if (e.target.value === 'all') {
+      this.props.setAllFilter();
+    }
   };
   onSortChange = (e) => {
     if (e.target.value === 'date') {
@@ -48,16 +57,15 @@ export class ExpenseListFilters extends React.Component {
             </select>
           </div>
           <div className="input-group__item">
-            <DateRangePicker
-              startDate={this.props.filters.startDate}
-              endDate={this.props.filters.endDate}
-              onDatesChange={this.onDatesChange}
-              focusedInput={this.state.calendarFocused}
-              onFocusChange={this.onFocusChange}
-              showClearDates={true}
-              numberOfMonths={1}
-              isOutsideRange={() => false}
-            />
+            <select
+              className="select"
+              value={this.props.filters.chooseBy}
+              onChange={this.onDoneChange}
+            >
+              <option value="done">Bought</option>
+              <option value="unDone">Yet to Buy</option>
+              <option value="all">All</option>
+            </select>
           </div>
         </div>
       </div>
@@ -72,6 +80,9 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   setTextFilter: (text) => dispatch(setTextFilter(text)),
   sortByDate: () => dispatch(sortByDate()),
+  setDoneFilter: () => dispatch(setDoneFilter()),
+  setUndoneFilter: () => dispatch(setUndoneFilter()),
+  setAllFilter: () => dispatch(setAllFilter()),
   sortByAmount: () => dispatch(sortByAmount()),
   setStartDate: (startDate) => dispatch(setStartDate(startDate)),
   setEndDate: (endDate) => dispatch(setEndDate(endDate))

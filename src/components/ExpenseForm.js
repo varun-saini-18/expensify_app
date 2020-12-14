@@ -11,6 +11,7 @@ export default class ExpenseForm extends React.Component {
       note: props.expense ? props.expense.note : '',
       amount: props.expense ? (props.expense.amount / 100).toString() : '',
       createdAt: props.expense ? moment(props.expense.createdAt) : moment(),
+      done: props.expense ? props.expense.done : 'false',
       calendarFocused: false,
       error: ''
     };
@@ -19,13 +20,25 @@ export default class ExpenseForm extends React.Component {
     const description = e.target.value;
     this.setState(() => ({ description }));
   };
+  onDoneChange = (e) => {
+    const done_val = e.target.value;
+    if(done_val==='true'){
+      console.log('No')
+      const done = 'true';
+      this.setState(() => ({ done }));
+    }
+    else{
+      const done = 'false';
+      console.log('Yes')
+      this.setState(() => ({ done }));
+    }
+  };
   onNoteChange = (e) => {
     const note = e.target.value;
     this.setState(() => ({ note }));
   };
   onAmountChange = (e) => {
     const amount = e.target.value;
-
     if (!amount || amount.match(/^\d{1,}(\.\d{0,2})?$/)) {
       this.setState(() => ({ amount }));
     }
@@ -49,7 +62,8 @@ export default class ExpenseForm extends React.Component {
         description: this.state.description,
         amount: parseFloat(this.state.amount, 10) * 100,
         createdAt: this.state.createdAt.valueOf(),
-        note: this.state.note
+        note: this.state.note,
+        done: this.state.done,     
       });
     }
   };
@@ -71,22 +85,17 @@ export default class ExpenseForm extends React.Component {
           className="text-input"
           value={this.state.amount}
           onChange={this.onAmountChange}
-        />
-        <SingleDatePicker
-          date={this.state.createdAt}
-          onDateChange={this.onDateChange}
-          focused={this.state.calendarFocused}
-          onFocusChange={this.onFocusChange}
-          numberOfMonths={1}
-          isOutsideRange={() => false}
-        />
-        <textarea
-          placeholder="Add a note for your expense (optional)"
-          className="textarea"
-          value={this.state.note}
-          onChange={this.onNoteChange}
-        >
-        </textarea>
+        />       
+        <td><input type="radio" name="site_name" 
+                    value='true'
+                    checked={this.state.done === 'true'} 
+                    onChange={this.onDoneChange} />Already Buyed
+        </td>
+        <td><input type="radio" name="site_name" 
+                    value='false'
+                    checked={this.state.done === 'false'} 
+                    onChange={this.onDoneChange} />Yet To Buy
+        </td>
         <div>
           <button className="button">Save Expense</button>
         </div>
