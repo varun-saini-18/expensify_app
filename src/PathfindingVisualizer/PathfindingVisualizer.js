@@ -19,6 +19,7 @@ var is_game_on = false;
 var visualizing = false;
 
 var random_dfs_content = <p>
+  <h2>Random Dfs</h2>
   <ul>
     <li>Choose the initial cell, mark it as visited and push it to the stack</li>
     <li>While the stack is not empty</li>
@@ -36,6 +37,7 @@ var random_dfs_content = <p>
 </p>
 
 var hunt_and_kill_content = <p>
+  <h2>Hunt And Kill</h2>
   <ol>
     <li>Choose a starting location.</li>
     <li>Until the current cell has no unvisited neighbors.</li>
@@ -48,6 +50,7 @@ var hunt_and_kill_content = <p>
 </p>
 
 var binary_tree_content = <p>
+  <h2>Binary Tree</h2>
   <ul>
     <li>For each existing cell in the grid:</li>
     <ol>
@@ -59,6 +62,7 @@ var binary_tree_content = <p>
 </p>
 
 var kruskals_content = <p>
+  <h2>Kruskals</h2>
   <ul>
     <li>Create a list of all walls, and create a set for each cell, each containing just that one cell.</li>
     <li>For each wall, in some random order:</li>
@@ -79,6 +83,7 @@ var kruskals_content = <p>
 </p>
 
 var recursive_division_content = <p>
+  <h2>Recursive Division</h2>
   <ol>
     <li>
       Begin with an empty field.
@@ -96,7 +101,8 @@ var recursive_division_content = <p>
 </p>
 
 var djikstra_content = <p>
-  Djikstra Algorithm will be updated soon. Stay Tuned.
+  <h2>Djikstra Algorithm</h2>
+  Djikstra Algorithm will be updated soon. Stay tuned.
 </p>
 
 // kruskals(5, 5);
