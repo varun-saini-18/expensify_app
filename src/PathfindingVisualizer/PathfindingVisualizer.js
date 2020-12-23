@@ -6,6 +6,7 @@ import { game } from '../algorithms/game';
 import { getMaze } from '../algorithms/getMaze';
 import { recursiveDivision, generate_arr } from '../algorithms/RecursiveDivision';
 import { func, huntAndKill } from '../algorithms/huntAndKill';
+import { binaryTree } from '../algorithms/binaryTree';
 
 import './PathfindingVisualizer.css';
 
@@ -249,7 +250,22 @@ export default class PathfindingVisualizer extends Component {
     }
     func();
     var visitedNodesInOrder = huntAndKill(0, 0, false);
-    console.log(visitedNodesInOrder);
+    for (var i = 0; i < visitedNodesInOrder.length; i++) {
+      var row = visitedNodesInOrder[i][0];
+      var col = visitedNodesInOrder[i][1];
+      const newGrid = getNewGridWithWallToggled(this.state.grid, row, col);
+      this.setState({ grid: newGrid });
+    }
+  }
+
+  binaryTree() {
+    for (var i = 0; i < 21; i++) {
+      for (var j = 0 + !(i % 2); j < 57; j = j + 1 + !(i % 2)) {
+        const newGrid = getNewGridWithWallToggled(this.state.grid, i, j);
+        this.setState({ grid: newGrid });
+      }
+    }
+    var visitedNodesInOrder = binaryTree();
     for (var i = 0; i < visitedNodesInOrder.length; i++) {
       var row = visitedNodesInOrder[i][0];
       var col = visitedNodesInOrder[i][1];
@@ -385,6 +401,9 @@ export default class PathfindingVisualizer extends Component {
         </button>
           <button onClick={() => this.recursiveDiv()} id="recusiveDiv" className="button">
             Recursive Division
+        </button>
+          <button onClick={() => this.binaryTree()} id="binaryTree" className="button">
+            Binary Tree
         </button>
           <button onClick={() => this.resetGrid()} id="clearBoardBtn" className="button">
             Clear Board
