@@ -100,3 +100,12 @@ input[type=text] {
 .check{
   padding:0px;
 }
+
+
+.w3-dropdown-content  {
+  width : auto;
+  text-align: left;
+}
+
+
+

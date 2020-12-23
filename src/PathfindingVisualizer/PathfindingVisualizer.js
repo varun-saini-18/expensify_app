@@ -18,6 +18,87 @@ var is_board_clear = true;
 var is_game_on = false;
 var visualizing = false;
 
+var random_dfs_content = <p>
+  <ul>
+    <li>Choose the initial cell, mark it as visited and push it to the stack</li>
+    <li>While the stack is not empty</li>
+    <ol>
+      <li>Pop a cell from the stack and make it a current cell</li>
+      <li>If the current cell has any neighbours which have not been visited</li>
+      <ol>
+        <li>Push the current cell to the stack</li>
+        <li>Choose one of the unvisited neighbours</li>
+        <li>Remove the wall between the current cell and the chosen cell</li>
+        <li>Mark the chosen cell as visited and push it to the stack</li>
+      </ol>
+    </ol>
+  </ul>
+</p>
+
+var hunt_and_kill_content = <p>
+  <ol>
+    <li>Choose a starting location.</li>
+    <li>Until the current cell has no unvisited neighbors.</li>
+    <ul>
+      <li>Perform a random walk, carving passages to unvisited neighbors. </li>
+    </ul>
+    <li>Enter “hunt” mode, where you scan the grid looking for an unvisited cell that is adjacent to a visited cell. If found, carve a passage between the two and let the formerly unvisited cell be the new starting location.</li>
+    <li>Repeat steps 2 and 3 until the hunt mode scans the entire grid and finds no unvisited cells.</li>
+  </ol>
+</p>
+
+var binary_tree_content = <p>
+  <ul>
+    <li>For each existing cell in the grid:</li>
+    <ol>
+      <li>Get if they exist, north or west neighbors.</li>
+      <li>Toss a coin to connect with one of them.</li>
+    </ol>
+    <li>It is already done!</li>
+  </ul>
+</p>
+
+var kruskals_content = <p>
+  <ul>
+    <li>Create a list of all walls, and create a set for each cell, each containing just that one cell.</li>
+    <li>For each wall, in some random order:</li>
+    <ul>
+      <li>
+        If the cells divided by this wall belong to distinct sets:
+        <ol>
+          <li>
+            Remove the current wall.
+          </li>
+          <li>
+            Join the sets of the formerly divided cells.
+          </li>
+        </ol>
+      </li>
+    </ul>
+  </ul>
+</p>
+
+var recursive_division_content = <p>
+  <ol>
+    <li>
+      Begin with an empty field.
+    </li>
+    <li>
+      Bisect the field with a wall, either horizontally or vertically. Add a single passage through the wall.
+    </li>
+    <li>
+      Repeat step #2 with the areas on either side of the wall.
+    </li>
+    <li>
+      Continue, recursively, until the maze reaches the desired resolution.
+    </li>
+  </ol>
+</p>
+
+var djikstra_content = <p>
+  Djikstra Algorithm will be updated soon. Stay Tuned.
+</p>
+
 // kruskals(5, 5);
 
 export default class PathfindingVisualizer extends Component {
@@ -31,10 +112,10 @@ export default class PathfindingVisualizer extends Component {
       START_NODE_COL: 0,
       FINISH_NODE_ROW: 20,
       FINISH_NODE_COL: 56,
-      timer: 30,
-      user_score: 0,
-      gameWallsCount: 0,
-      shortest_path: 0,
+      generating_algo: "Random Dfs",
+      generating_algo_content: random_dfs_content,
+      solving_algo: "Djikstra",
+      solving_algo_content: djikstra_content
     };
   }
 
@@ -209,6 +290,30 @@ export default class PathfindingVisualizer extends Component {
     this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
   }
 
+  create_maze(nodesInShortestPathOrder) {
+    for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
+      setTimeout(() => {
+        const node = nodesInShortestPathOrder[i];
+        var row = node[0];
+        var col = node[1];
+        const newGrid = getNewGridWithWallToggled(this.state.grid, row, col);
+        this.setState({ grid: newGrid });
+      }, this.state.speed * 5 * i);
+    }
+  }
+
+  create_random_dfs_maze(nodesInShortestPathOrder) {
+    for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
+      setTimeout(() => {
+        const node = nodesInShortestPathOrder[i];
+        var row = node.row;
+        var col = node.col;
+        const newGrid = getNewGridWithWallToggled(this.state.grid, row, col);
+        this.setState({ grid: newGrid });
+      }, this.state.speed * 5 * i);
+    }
+  }
+
   kruskals() {
     const x = kruskals(21, 57);
     const visitedNodesInOrder = x[1];
@@ -219,26 +324,15 @@ export default class PathfindingVisualizer extends Component {
       const col = visitedNodesInOrder[i][1];
       const newGrid = getNewGridWithWallToggled(this.state.grid, row, col);
       this.setState({ grid: newGrid });
-
     }
-    for (var i = 0; i < nodesInShortestPathOrder.length; i++) {
-      var row = nodesInShortestPathOrder[i][0];
-      var col = nodesInShortestPathOrder[i][1];
-      const newGrid = getNewGridWithWallToggled(this.state.grid, row, col);
-      this.setState({ grid: newGrid });
-    }
+    this.create_maze(nodesInShortestPathOrder);
   }
 
 
   recursiveDiv() {
     generate_arr();
     const visitedNodesInOrder = recursiveDivision(0, 20, 0, 56)
-    for (var i = 0; i < visitedNodesInOrder.length; i++) {
-      var row = visitedNodesInOrder[i][0];
-      var col = visitedNodesInOrder[i][1];
-      const newGrid = getNewGridWithWallToggled(this.state.grid, row, col);
-      this.setState({ grid: newGrid });
-    }
+    this.create_maze(visitedNodesInOrder);
   }
 
   huntAndKill() {
@@ -250,12 +344,7 @@ export default class PathfindingVisualizer extends Component {
     }
     func();
     var visitedNodesInOrder = huntAndKill(0, 0, false);
-    for (var i = 0; i < visitedNodesInOrder.length; i++) {
-      var row = visitedNodesInOrder[i][0];
-      var col = visitedNodesInOrder[i][1];
-      const newGrid = getNewGridWithWallToggled(this.state.grid, row, col);
-      this.setState({ grid: newGrid });
-    }
+    this.create_maze(visitedNodesInOrder);
   }
 
   binaryTree() {
@@ -266,109 +355,39 @@ export default class PathfindingVisualizer extends Component {
       }
     }
     var visitedNodesInOrder = binaryTree();
-    for (var i = 0; i < visitedNodesInOrder.length; i++) {
-      var row = visitedNodesInOrder[i][0];
-      var col = visitedNodesInOrder[i][1];
-      const newGrid = getNewGridWithWallToggled(this.state.grid, row, col);
-      this.setState({ grid: newGrid });
-    }
+    this.create_maze(visitedNodesInOrder);
   }
 
   randomDfs() {
-    // document.getElementById("visualiseDataBtn").disabled = true;
-    // document.getElementById("visualiseDataBtn").className = "button-disabled";
-    // document.getElementById("clearBoardBtn").disabled = true;
-    // document.getElementById("clearBoardBtn").className = "button-disabled";
-    // is_game_on = true;
-    // var time = 0;
-    // document.getElementById(`node-${this.state.START_NODE_ROW}-${this.state.START_NODE_COL}`).className =
-    //   'node';
-    // document.getElementById(`node-${this.state.FINISH_NODE_ROW}-${this.state.FINISH_NODE_COL}`).className =
-    //   'node';
-    // this.setState({ timer: 30, shortest_path: 0, user_score: 0, shortest_path_length: 0, START_NODE_ROW: 0, START_NODE_COL: 0, FINISH_NODE_COL: 56, FINISH_NODE_ROW: 20 });
-    // document.getElementById(`node-${0}-${0}`).className =
-    //   'node node-start';
-    // document.getElementById(`node-${20}-${56}`).className =
-    //   'node node-finish';
-    // for (var i = 0; i < 30; i++) {
-    //   setTimeout(() => {
-    //     var val = this.state.timer - 1;
-    //     this.setState({ timer: val });
-    //   }, 1000 * i);
-    // }
-    // time = 1000 * 30;
     const { grid } = this.state;
     const nodesWithWall = getMaze(grid);
-
-    for (var i = 0; i < nodesWithWall.length; i++) {
-      var row = nodesWithWall[i].row;
-      var col = nodesWithWall[i].col;
-      const newGrid = getNewGridWithWallToggled(this.state.grid, row, col);
-      this.setState({ grid: newGrid });
-    }
-    // setTimeout(() => {
-    //   const { grid } = this.state;
-    //   const startNode = grid[this.state.START_NODE_ROW][this.state.START_NODE_COL];
-    //   const finishNode = grid[this.state.FINISH_NODE_ROW][this.state.FINISH_NODE_COL];
-    //   const did_win = game(grid, startNode, finishNode);
-    //   if (did_win) {
-    //     var x = this.state.user_score + this.state.gameWallsCount;
-    //     this.setState({ user_score: x });
-    //     alert('Your score is ' + this.state.gameWallsCount);
-    //   }
-    //   else {
-    //     this.setState({ user_score: 0 });
-    //     alert('Loss. Score is 0.');
-    //   }
-    //   is_game_on = false;
-    //   document.getElementById("visualiseDataBtn").disabled = false;
-    //   document.getElementById("clearBoardBtn").disabled = false;
-    //   document.getElementById("visualiseDataBtn").className = "button";
-    //   document.getElementById("clearBoardBtn").className = "button";
-    //   const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
-    //   const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
-    //   var shortest_path_length = nodesInShortestPathOrder.length - 2;
-    //   this.setState({ shortest_path: shortest_path_length })
-    // }, time);
+    this.create_random_dfs_maze(nodesWithWall);
   }
 
   resetGrid() {
-    // document.getElementById("visualiseDataBtn").disabled = true;
-    // // document.getElementById("clearBoardBtn").disabled = true;
-    // document.getElementById("visualiseDataBtn").className = "button-disabled";
-    // // document.getElementById("clearBoardBtn").className = "button-disabled";
-    is_game_on = false;
-    visualizing = true;
-    const grid = getInitialGrid(this.state.START_NODE_ROW, this.state.START_NODE_COL, this.state.FINISH_NODE_ROW, this.state.FINISH_NODE_COL);
+    // const grid = getInitialGrid(this.state.START_NODE_ROW, this.state.START_NODE_COL, this.state.FINISH_NODE_ROW, this.state.FINISH_NODE_COL);
+    var grid = this.state.grid;
     for (let row = 0; row < 21; row++) {
       for (let column = 0; column < 57; column++) {
-        setTimeout(() => {
-          if (row === this.state.START_NODE_ROW && column === this.state.START_NODE_COL) {
-            document.getElementById(`node-${this.state.START_NODE_ROW}-${this.state.START_NODE_COL}`).className =
-              'node node-start';
-          }
-          else if (row === this.state.FINISH_NODE_ROW && column === this.state.FINISH_NODE_COL) {
-            document.getElementById(`node-${this.state.FINISH_NODE_ROW}-${this.state.FINISH_NODE_COL}`).className =
-              'node node-finish';
+        if (row === this.state.START_NODE_ROW && column === this.state.START_NODE_COL) {
+
+        }
+        else if (row === this.state.FINISH_NODE_ROW && column === this.state.FINISH_NODE_COL) {
+
+        }
+        else {
+          var node = grid[row][column];
+          if (node.isWall) {
+            const newGrid = getNewGridWithWallToggled(this.state.grid, row, column);
+            this.setState({ grid: newGrid });
           }
           else {
             document.getElementById(`node-${row}-${column}`).className =
               'node';
           }
-        }, this.state.speed * 5 * row);
+        }
       }
     }
-    setTimeout(() => {
-      // document.getElementById("visualiseDataBtn").disabled = false;
-      // document.getElementById("visualiseDataBtn").className = "button";
-      // document.getElementById("clearBoardBtn").disabled = false;
-      // document.getElementById("clearBoardBtn").className = "button";
-      // document.getElementById("gameBtn").disabled = false;
-      // document.getElementById("gameBtn").className = "button";
-      visualizing = false;
-      is_board_clear = true;
-      this.setState({ grid, gameWallsCount: 0 });
-    }, this.state.speed * 5 * 21);
   }
 
   changeSpeed() {
@@ -381,39 +400,106 @@ export default class PathfindingVisualizer extends Component {
     this.setState({ level: x });
   }
 
+  changeContent() {
+    this.setState({ generating_algo_content: 'Other' });
+  }
+
+  generate_maze() {
+    var generating_algo = this.state.generating_algo;
+    if (generating_algo === "Random Dfs") {
+      this.randomDfs();
+    }
+    else if (generating_algo === "Kruskals") {
+      this.kruskals();
+    }
+    else if (generating_algo === "Hunt And Kill") {
+      this.huntAndKill();
+    }
+    else if (generating_algo === "Recursive Division") {
+      this.recursiveDiv();
+    }
+    else {
+      this.binaryTree();
+    }
+  }
+
+  solve_maze() {
+    var solving_algo = this.state.solving_algo;
+    if (solving_algo === "Djikstra") {
+      this.visualizeDijkstra();
+    }
+  }
+
+  changeGeneratingAlgo() {
+    var generating_algo = document.getElementById("change_generating_algo").value;
+    var content;
+    if (generating_algo === "Random Dfs") {
+      content = random_dfs_content;
+    }
+    else if (generating_algo === "Kruskals") {
+      content = kruskals_content;
+    }
+    else if (generating_algo === "Hunt And Kill") {
+      content = hunt_and_kill_content;
+    }
+    else if (generating_algo === "Recursive Division") {
+      content = recursive_division_content;
+    }
+    else {
+      content = binary_tree_content;
+    }
+    this.setState({ generating_algo: generating_algo, generating_algo_content: content });
+  }
+
+  changeSolvingAlgo() {
+    var solving_algo = document.getElementById("change_solving_algo").value;
+    var content;
+    if (solving_algo === "Djikstra") {
+      content = djikstra_content;
+    }
+    this.setState({ solving_algo: solving_algo, solving_algo_content: content });
+  }
+
+
   render() {
     const { grid, mouseIsPressed } = this.state;
     const gameBtn = is_game_on ? 'Stop Game' : 'Start Game';
     return (
       <div>
         <div className="navbar">
-          <button onClick={() => this.visualizeDijkstra()} id="visualiseDataBtn" className="button">
-            Visualize Dijkstra's Algorithm
+          <select onChange={() => this.changeGeneratingAlgo()} name="algos" id="change_generating_algo">
+            <option value="Random Dfs">Random Dfs</option>
+            <option value="Kruskals">Kruskals</option>
+            <option value="Hunt And Kill">Hunt And Kill</option>
+            <option value="Recursive Division">Recursive Division</option>
+            <option value="Binary Tree">Binary Tree</option>
+          </select>
+          <button onClick={() => this.generate_maze()} id="generate_maze" className="button">
+            Generate Maze
         </button>
-          <button onClick={() => this.randomDfs()} id="randomDfs" className="button">
-            RandomDfs
-        </button>
-          <button onClick={() => this.kruskals()} id="kruskalsBtn" className="button">
-            Kruskals
-        </button>
-          <button onClick={() => this.huntAndKill()} id="huntAndKill" className="button">
-            Hunt And Kill
-        </button>
-          <button onClick={() => this.recursiveDiv()} id="recusiveDiv" className="button">
-            Recursive Division
-        </button>
-          <button onClick={() => this.binaryTree()} id="binaryTree" className="button">
-            Binary Tree
+          <select onChange={() => this.changeSolvingAlgo()} name="algos" id="change_solving_algo">
+            <option value="Djikstra">Djikstra</option>
+          </select>
+          <button onClick={() => this.solve_maze()} id="solve_maze" className="button">
+            Solve Maze
         </button>
           <button onClick={() => this.resetGrid()} id="clearBoardBtn" className="button">
             Clear Board
         </button>
-          <p>Timer : {this.state.timer}</p>
-          <p>Selected Path Length : {this.state.gameWallsCount}</p>
-          <p>Your Path Length : {this.state.user_score}</p>
-          <p>Shortest Path : {this.state.shortest_path}</p>
-          <br></br>
         </div>
+        <div className="w3-dropdown-hover">
+          <button className="w3-button w3-black">Want to know about maze genearting algorithm?</button>
+          <div className="w3-dropdown-content w3-bar-block w3-border">
+            {this.state.generating_algo_content}
+          </div>
+        </div>
+        <div className="w3-dropdown-hover">
+          <button className="w3-button w3-black">Want to know about maze solving algorithm?</button>
+          <div className="w3-dropdown-content w3-bar-block w3-border">
+            {this.state.solving_algo_content}
+          </div>
+        </div>
+
         <div className="grid">
           {grid.map((row, rowIdx) => {
             return (
