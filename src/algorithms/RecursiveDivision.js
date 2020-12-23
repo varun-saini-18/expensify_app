@@ -22,10 +22,11 @@ export function generate_arr() {
     shuffle();
 }
 
+var x = 0;
 export function recursiveDivision(row_begin, row_end, col_begin, col_end) {
     if (row_end <= row_begin || col_end <= col_begin) return;
-    var x;
-    x = array[arr_index];
+    x = x ^ 1;
+    // x = array[arr_index];
     arr_index++;
     if (x === 0) {
         var num = (row_end - row_begin) / 2;
