@@ -55,7 +55,7 @@ function is_row_valid(row)
 
 function is_col_valid(col)
 {
-    if(col<58&&col>=0) return true;
+    if(col<40&&col>=0) return true;
     else return false;
 }
 
