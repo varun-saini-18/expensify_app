@@ -49,7 +49,7 @@ var col_arr = [2,-2,0,0];
 
 function is_row_valid(row)
 {
-    if(row<22&&row>=0) return true;
+    if(row<14&&row>=0) return true;
     else return false;
 }
 
@@ -60,12 +60,12 @@ function is_col_valid(col)
 }
 
 export function getMaze(grid) {
-    var visited = new Array(21); 
+    var visited = new Array(15); 
     for (var i = 0; i < visited.length; i++) { 
-        visited[i] = new Array(57); 
+        visited[i] = new Array(40); 
     }
-    for (i = 0; i < 21; i++) { 
-        for (var j = 0; j < 57; j++) { 
+    for (i = 0; i < 15; i++) { 
+        for (var j = 0; j < 40; j++) { 
             visited[i][j] = false; 
         } 
     }
@@ -122,8 +122,8 @@ export function getMaze(grid) {
     }
     var not_visited = [];
     var count = 0;
-    for (i = 0; i < 21; i++) { 
-        for (var j = 0; j < 57; j++) { 
+    for (i = 0; i < 15; i++) { 
+        for (var j = 0; j < 40; j++) { 
             if(!visited[i][j])
             {
                 count++;
