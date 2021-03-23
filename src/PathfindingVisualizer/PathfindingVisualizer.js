@@ -21,7 +21,7 @@ var visualizing = false;
 var random_dfs_content = <p>
   <h2>Random Dfs</h2>
   <ul>
-    <li>Choose the initial cell, mark it as visited and push it to the stack</li>
+    <li>Choose the initial cell, mark it as visited and push it to the stack!</li>
     <li>While the stack is not empty</li>
     <ol>
       <li>Pop a cell from the stack and make it a current cell</li>
