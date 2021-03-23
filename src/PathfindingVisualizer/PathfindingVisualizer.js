@@ -117,7 +117,7 @@ export default class PathfindingVisualizer extends Component {
       START_NODE_ROW: 0,
       START_NODE_COL: 0,
       FINISH_NODE_ROW: 20,
-      FINISH_NODE_COL: 56,
+      FINISH_NODE_COL: 49,
       generating_algo: "Random Dfs",
       generating_algo_content: random_dfs_content,
       solving_algo: "Djikstra",
@@ -321,7 +321,7 @@ export default class PathfindingVisualizer extends Component {
   }
 
   kruskals() {
-    const x = kruskals(21, 57);
+    const x = kruskals(21, 50);
     const visitedNodesInOrder = x[1];
     const nodesInShortestPathOrder = x[0];
 
@@ -343,7 +343,7 @@ export default class PathfindingVisualizer extends Component {
 
   huntAndKill() {
     for (var i = 0; i < 21; i++) {
-      for (var j = 0 + !(i % 2); j < 57; j = j + 1 + !(i % 2)) {
+      for (var j = 0 + !(i % 2); j < 50; j = j + 1 + !(i % 2)) {
         const newGrid = getNewGridWithWallToggled(this.state.grid, i, j);
         this.setState({ grid: newGrid });
       }
@@ -355,7 +355,7 @@ export default class PathfindingVisualizer extends Component {
 
   binaryTree() {
     for (var i = 0; i < 21; i++) {
-      for (var j = 0 + !(i % 2); j < 57; j = j + 1 + !(i % 2)) {
+      for (var j = 0 + !(i % 2); j < 50; j = j + 1 + !(i % 2)) {
         const newGrid = getNewGridWithWallToggled(this.state.grid, i, j);
         this.setState({ grid: newGrid });
       }
@@ -374,7 +374,7 @@ export default class PathfindingVisualizer extends Component {
     // const grid = getInitialGrid(this.state.START_NODE_ROW, this.state.START_NODE_COL, this.state.FINISH_NODE_ROW, this.state.FINISH_NODE_COL);
     var grid = this.state.grid;
     for (let row = 0; row < 21; row++) {
-      for (let column = 0; column < 57; column++) {
+      for (let column = 0; column < 50; column++) {
         if (row === this.state.START_NODE_ROW && column === this.state.START_NODE_COL) {
 
         }
@@ -542,7 +542,7 @@ const getInitialGrid = (startRow, startCol, finishRow, finishCol) => {
   const grid = [];
   for (let row = 0; row < 21; row++) {
     const currentRow = [];
-    for (let col = 0; col < 57; col++) {
+    for (let col = 0; col < 50; col++) {
       currentRow.push(createNode(col, row, startRow, startCol, finishRow, finishCol));
     }
     grid.push(currentRow);
